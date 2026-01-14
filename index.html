@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>독도 디지털 아카이브: 역사와 진실</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f4; /* Stone 100 */
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+        .nav-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-card:hover .icon-box {
+            background-color: #1c1917;
+            color: white;
+            transform: scale(1.1);
+        }
+        .hero-pattern {
+            background-image: radial-gradient(#d6d3d1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+    <!-- Chosen Palette: Stone (Warm Grey) background to match previous apps, Dark Charcoal for text, Blue accents -->
+    <!-- Structure: 
+         1. Hero Section: Clear title and purpose statement.
+         2. Navigation Grid: 4 distinct cards linking to the requested sub-pages (01, 02, 03, 04).
+         3. Footer: Simple copyright and info.
+    -->
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Hero Section -->
+    <header class="relative bg-white border-b border-stone-200 overflow-hidden">
+        <div class="absolute inset-0 hero-pattern opacity-30 pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2"></div>
+        
+        <div class="max-w-6xl mx-auto px-6 py-20 relative z-10 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-stone-100 text-stone-600 text-sm font-bold tracking-widest mb-4 border border-stone-200">DOKDO DIGITAL ARCHIVE</span>
+            <h1 class="text-4xl md:text-6xl font-bold serif text-stone-900 mb-6 leading-tight">
+                독도, <span class="text-stone-400 font-light">우리 역사의 진실</span>을<br>기록하고 기억합니다.
+            </h1>
+            <p class="text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed">
+                대한민국의 아름다운 영토 독도에 대한 올바른 역사 인식과 주권 수호를 위한 디지털 공간입니다.
+                정부 정책부터 역사적 사료, 핵심 용어까지 체계적으로 살펴보세요.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Navigation Grid -->
+    <main class="flex-grow max-w-6xl mx-auto px-6 py-12 -mt-8 relative z-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+
+            <!-- Card 01: 정책 (Policy) -->
+            <a href="01.html" class="nav-card bg-white p-8 rounded-2xl shadow-lg border border-stone-100 flex flex-col group h-full">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="icon-box w-14 h-14 bg-stone-100 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 text-stone-700">
+                        ⚖️
+                    </div>
+                    <span class="text-xs font-bold text-stone-300 font-mono">01</span>
+                </div>
+                <h2 class="text-2xl font-bold serif mb-3 group-hover:text-blue-700 transition-colors">독도 정책 및 현황</h2>
+                <p class="text-stone-500 leading-relaxed mb-6 flex-grow">
+                    대한민국 정부의 독도에 대한 확고한 입장과 기본 정책, 그리고 현재 독도의 일반 현황을 확인합니다.
+                </p>
+                <div class="flex items-center text-sm font-bold text-stone-400 group-hover:text-stone-900 transition-colors">
+                    자세히 보기 <span class="ml-2">→</span>
+                </div>
+            </a>
+
+            <!-- Card 02: 연표 (Timeline) -->
+            <a href="02.html" class="nav-card bg-white p-8 rounded-2xl shadow-lg border border-stone-100 flex flex-col group h-full">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="icon-box w-14 h-14 bg-stone-100 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 text-stone-700">
+                        ⏳
+                    </div>
+                    <span class="text-xs font-bold text-stone-300 font-mono">02</span>
+                </div>
+                <h2 class="text-2xl font-bold serif mb-3 group-hover:text-blue-700 transition-colors">역사 연표 (Timeline)</h2>
+                <p class="text-stone-500 leading-relaxed mb-6 flex-grow">
+                    1454년 세종실록지리지부터 현대에 이르기까지, 문헌과 사건으로 보는 독도의 역사를 연대순으로 탐색합니다.
+                </p>
+                <div class="flex items-center text-sm font-bold text-stone-400 group-hover:text-stone-900 transition-colors">
+                    연표 보러가기 <span class="ml-2">→</span>
+                </div>
+            </a>
+
+            <!-- Card 03: 용어 (Glossary) -->
+            <a href="03.html" class="nav-card bg-white p-8 rounded-2xl shadow-lg border border-stone-100 flex flex-col group h-full">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="icon-box w-14 h-14 bg-stone-100 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 text-stone-700">
+                        📖
+                    </div>
+                    <span class="text-xs font-bold text-stone-300 font-mono">03</span>
+                </div>
+                <h2 class="text-2xl font-bold serif mb-3 group-hover:text-blue-700 transition-colors">핵심 용어 사전</h2>
+                <p class="text-stone-500 leading-relaxed mb-6 flex-grow">
+                    '우산도', '태정관 지령', 'SCAPIN 677호' 등 독도 영유권 논쟁의 핵심이 되는 주요 용어와 문헌을 정리했습니다.
+                </p>
+                <div class="flex items-center text-sm font-bold text-stone-400 group-hover:text-stone-900 transition-colors">
+                    용어 검색하기 <span class="ml-2">→</span>
+                </div>
+            </a>
+
+            <!-- Card 04: 의견수렴 (Opinion) -->
+            <a href="04.html" class="nav-card bg-white p-8 rounded-2xl shadow-lg border border-stone-100 flex flex-col group h-full">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="icon-box w-14 h-14 bg-stone-100 rounded-2xl flex items-center justify-center text-2xl transition-all duration-300 text-stone-700">
+                        💬
+                    </div>
+                    <span class="text-xs font-bold text-stone-300 font-mono">04</span>
+                </div>
+                <h2 class="text-2xl font-bold serif mb-3 group-hover:text-blue-700 transition-colors">국민 의견 수렴</h2>
+                <p class="text-stone-500 leading-relaxed mb-6 flex-grow">
+                    독도 수호와 홍보를 위한 여러분의 소중한 아이디어와 의견을 듣습니다. 함께 만들어가는 독도의 미래입니다.
+                </p>
+                <div class="flex items-center text-sm font-bold text-stone-400 group-hover:text-stone-900 transition-colors">
+                    의견 남기기 <span class="ml-2">→</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Brief Info Section -->
+    <section class="max-w-6xl mx-auto px-6 py-12 mb-8">
+        <div class="bg-stone-800 rounded-2xl p-8 md:p-12 text-center md:text-left flex flex-col md:flex-row items-center justify-between shadow-2xl">
+            <div class="mb-6 md:mb-0">
+                <h3 class="text-2xl font-bold text-white serif mb-2">독도는 지리적, 역사적, 국제법적으로</h3>
+                <p class="text-stone-400 text-lg">명백한 대한민국의 고유 영토입니다.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="text-center px-6 py-4 bg-stone-700 rounded-xl bg-opacity-50 border border-stone-600">
+                    <div class="text-2xl font-bold text-white mb-1">89개</div>
+                    <div class="text-xs text-stone-400">부속 도서</div>
+                </div>
+                <div class="text-center px-6 py-4 bg-stone-700 rounded-xl bg-opacity-50 border border-stone-600">
+                    <div class="text-2xl font-bold text-white mb-1">87.4km</div>
+                    <div class="text-xs text-stone-400">울릉도와의 거리</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 py-10 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 text-center text-stone-500 text-sm">
+            <p class="mb-4 font-serif text-stone-800 text-lg font-bold">Dokdo Digital Archive</p>
+            <div class="flex justify-center gap-6 mb-6">
+                <a href="01.html" class="hover:text-stone-800 transition-colors">정책</a>
+                <a href="02.html" class="hover:text-stone-800 transition-colors">역사</a>
+                <a href="03.html" class="hover:text-stone-800 transition-colors">용어</a>
+                <a href="04.html" class="hover:text-stone-800 transition-colors">소통</a>
+            </div>
+            <p>&copy; 2026 Dokdo Digital Archive. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
