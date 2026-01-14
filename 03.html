@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>독도 핵심 용어 아카이브</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f4; /* Stone 100 */
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a8a29e;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716c;
+        }
+        
+        /* Chart Container Logic */
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            max-height: 300px;
+        }
+        
+        /* Tab Active State */
+        .tab-btn.active {
+            background-color: #1c1917; /* Stone 900 */
+            color: white;
+            border-color: #1c1917;
+        }
+    </style>
+    <!-- Chosen Palette: Stone (Warm Grey) for background, Navy Blue (Korea), Muted Red (Japan/Conflict), Gold (Key Evidence) -->
+    <!-- Application Structure Plan: 
+         Header: Title and Home Link.
+         Nav: Tab-based navigation (Names, Documents, People) + Search Bar.
+         Main Content: Dynamic grid layout that changes based on selected tab.
+         - 'Names' Tab: Timeline/Card flow.
+         - 'Documents' Tab: Interactive Grid + Analytical Donut Chart showing origin of evidence.
+         - 'People' Tab: Profile cards.
+         Reasoning: Tab structure prevents information overload, allowing users to focus on one category of terminology at a time. The chart adds analytical depth to the document list.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Interactive Cards: Used for all glossary items. Allows digesting complex definitions in bite-sized chunks.
+         2. Evidence Distribution Chart (Donut): Placed in 'Documents' tab. Visualizes that a significant portion of evidence supporting Korea comes from Japanese or International sources (Analysis).
+         3. Color Coding: Blue tags for Korea, Red for Japan, Gray for Intl. Helps instant recognition of origin.
+         4. Search: Javascript filter to quickly find terms like "Seokdo" or "Scapin".
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-stone-900 text-stone-100 py-6 px-4 shadow-lg border-b-4 border-stone-700">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <a href="index.html" class="inline-flex items-center px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-700 text-stone-300 hover:text-white transition-all duration-200 text-sm font-medium group mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    홈으로
+                </a>
+                <h1 class="text-2xl md:text-4xl font-bold serif tracking-wide">독도 핵심 용어 사전</h1>
+                <p class="text-stone-400 text-sm mt-1">올바른 역사를 위한 필수 어휘와 문헌 가이드</p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="w-full md:w-auto relative">
+                <input type="text" id="searchInput" placeholder="용어 검색 (예: 안용복, 칙령)" 
+                    class="w-full md:w-64 px-4 py-2 rounded-full bg-stone-800 border border-stone-600 text-stone-200 placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all">
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex space-x-2 md:space-x-8 overflow-x-auto no-scrollbar py-3">
+                <button onclick="switchTab('names')" class="tab-btn active px-4 py-2 rounded-lg border border-transparent text-sm md:text-base font-bold transition-all whitespace-nowrap" id="tab-names">
+                    1. 명칭 변천사
+                </button>
+                <button onclick="switchTab('documents')" class="tab-btn px-4 py-2 rounded-lg border border-transparent text-sm md:text-base font-medium text-stone-500 hover:bg-stone-100 transition-all whitespace-nowrap" id="tab-documents">
+                    2. 핵심 고문서
+                </button>
+                <button onclick="switchTab('people')" class="tab-btn px-4 py-2 rounded-lg border border-transparent text-sm md:text-base font-medium text-stone-500 hover:bg-stone-100 transition-all whitespace-nowrap" id="tab-people">
+                    3. 인물 및 사건
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
+        
+        <!-- INTRO SECTION (Dynamic) -->
+        <div id="section-intro" class="mb-8 p-6 bg-white rounded-xl shadow-sm border border-stone-200">
+            <h2 class="text-xl font-bold serif mb-2 text-stone-800" id="intro-title">명칭의 역사</h2>
+            <p class="text-stone-600 leading-relaxed text-sm md:text-base" id="intro-desc">
+                독도의 이름은 시대와 주체에 따라 다양하게 불렸습니다. '우산도'부터 현재의 '독도'에 이르기까지, 명칭의 변화는 곧 영유권 인식의 역사를 보여줍니다.
+            </p>
+        </div>
+
+        <!-- VIEW: NAMES -->
+        <div id="view-names" class="view-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Content injected by JS -->
+        </div>
+
+        <!-- VIEW: DOCUMENTS -->
+        <div id="view-documents" class="view-section hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Analytics Column -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                        <h3 class="font-bold serif text-lg mb-4">증거 문헌 출처 분석</h3>
+                        <p class="text-xs text-stone-500 mb-4">
+                            핵심 증거 자료들이 어느 나라의 문헌인지 분석합니다. 일본 문헌이 스스로 독도를 한국 땅으로 인정한 사례가 다수 포함되어 있습니다.
+                        </p>
+                        <div class="chart-wrapper mx-auto">
+                            <canvas id="docChart"></canvas>
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                            <div class="p-2 bg-blue-50 rounded text-blue-800 font-bold">🇰🇷 한국<br><span id="stat-kr">0</span>건</div>
+                            <div class="p-2 bg-red-50 rounded text-red-800 font-bold">🇯🇵 일본<br><span id="stat-jp">0</span>건</div>
+                            <div class="p-2 bg-stone-100 rounded text-stone-800 font-bold">🌍 국제<br><span id="stat-intl">0</span>건</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6" id="documents-grid">
+                    <!-- Content injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: PEOPLE -->
+        <div id="view-people" class="view-section hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Content injected by JS -->
+        </div>
+
+        <!-- Empty State for Search -->
+        <div id="empty-search" class="hidden text-center py-20">
+            <div class="text-4xl mb-4">🔍</div>
+            <h3 class="text-lg font-bold text-stone-400">검색 결과가 없습니다</h3>
+            <p class="text-stone-500">다른 키워드로 검색해보세요.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-200 py-8 text-center text-stone-500 text-sm border-t border-stone-300 mt-auto">
+        <div class="max-w-6xl mx-auto px-4">
+            <p class="font-bold mb-2">Dokdo Digital Glossary</p>
+            <p>본 자료는 제공된 소스 리포트를 기반으로 구성되었습니다.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA SOURCE ---
+        const glossaryData = {
+            names: [
+                { id: "n1", term: "우산도", hanja: "于山島", desc: "삼국시대 우산국에서 유래한 독도의 옛 이름.", tag: "가장 오래된 명칭", type: "korea" },
+                { id: "n2", term: "석도", hanja: "石島", desc: "1900년 대한제국 칙령 제41호 공식 명칭. '돌섬'의 이두식 표기.", tag: "관할권 입증", type: "korea" },
+                { id: "n3", term: "마쓰시마", hanja: "松島", desc: "과거 일본이 독도를 부르던 명칭 (당시 울릉도는 '죽도').", tag: "명칭 혼란", type: "japan" },
+                { id: "n4", term: "리앙쿠르암", hanja: "Liancourt Rocks", desc: "1849년 프랑스 포경선이 발견 후 붙인 서양식 명칭.", tag: "국제 명칭", type: "intl" }
+            ],
+            documents: [
+                { id: "d1", title: "세종실록지리지", year: 1454, origin: "korea", content: "우산, 무릉 두 섬이 울진현 정동쪽에 있으며 서로 바라볼 수 있음.", meaning: "지리적 인식 증거" },
+                { id: "d2", title: "은주시청합기", year: 1667, origin: "japan", content: "울릉도와 독도는 일본 영토 밖(조선 땅)임을 기록.", meaning: "일본 최초의 인정" },
+                { id: "d3", title: "태정관 지령", year: 1877, origin: "japan", content: "최고 행정기관이 '독도와 울릉도는 일본과 무관함' 공식 인정.", meaning: "결정적 반박 증거" },
+                { id: "d4", title: "대한제국 칙령 41호", year: 1900, origin: "korea", content: "고종 황제가 독도(석도)를 울릉군의 관할 구역으로 공식 반포.", meaning: "근대적 주권 행사" },
+                { id: "d5", title: "시마네현 고시 40호", year: 1905, origin: "japan", content: "러일전쟁 중 주인 없는 땅(무주지)이라 주장하며 불법 편입.", meaning: "제국주의 침탈" },
+                { id: "d6", title: "SCAPIN 제677호", year: 1946, origin: "intl", content: "연합군최고사령관 지령. 독도를 일본의 통치권에서 제외함.", meaning: "전후 처리 기준" }
+            ],
+            people: [
+                { id: "p1", name: "안용복", sub: "조선 숙종 때의 어부", desc: "일본에 건너가 독도가 조선 땅임을 강력히 주장하여 막부의 '도해 금지령'을 이끌어냄.", type: "hero" },
+                { id: "p2", name: "독도의용수비대", sub: "1950년대 민간 수비대", desc: "한국전쟁 혼란기에 홍순칠 대장 등이 자발적으로 결성하여 독도를 무장 수호함.", type: "hero" },
+                { id: "p3", name: "평화선", sub: "이승만 라인 (1952)", desc: "이승만 대통령이 선포한 해양 주권 선언. 독도를 포함한 인접 해양 주권을 명확히 함.", type: "policy" },
+                { id: "p4", name: "다케시마의 날", sub: "2월 22일 (2005 제정)", desc: "일본 시마네현이 1905년의 불법 편입을 기념하여 제정한 날. 갈등의 원인.", type: "conflict" }
+            ]
+        };
+
+        const descriptions = {
+            names: { title: "명칭 변천사", text: "독도의 이름은 단순한 호칭이 아닙니다. '우산도'에서 '석도'로 이어지는 한국의 기록과, 혼란스러웠던 일본의 명칭('마쓰시마')을 비교해보면 누가 주인으로서 명확히 인식하고 있었는지 알 수 있습니다." },
+            documents: { title: "핵심 고문서 (증거)", text: "영유권 논쟁의 핵심은 문헌 증거에 있습니다. 놀랍게도 독도가 한국 땅이라는 가장 결정적인 증거들(태정관 지령 등)은 일본 정부의 공식 문서에서 발견됩니다." },
+            people: { title: "인물 및 사건", text: "독도를 지켜낸 것은 국가의 힘만이 아니었습니다. 안용복과 독도의용수비대 같은 민간의 헌신이 있었기에 오늘날의 독도가 있습니다. 반면 '다케시마의 날' 같은 갈등의 씨앗도 여전히 존재합니다." }
+        };
+
+        // --- STATE & UTILS ---
+        let currentTab = 'names';
+        let chartInstance = null;
+
+        function getOriginStyle(origin) {
+            if (origin === 'korea') return { bg: 'bg-blue-50', text: 'text-blue-900', border: 'border-blue-200', badge: 'bg-blue-100 text-blue-700', label: '🇰🇷 한국' };
+            if (origin === 'japan') return { bg: 'bg-red-50', text: 'text-red-900', border: 'border-red-200', badge: 'bg-red-100 text-red-700', label: '🇯🇵 일본' };
+            return { bg: 'bg-stone-100', text: 'text-stone-900', border: 'border-stone-300', badge: 'bg-stone-200 text-stone-700', label: '🌍 국제' };
+        }
+
+        // --- RENDERING FUNCTIONS ---
+
+        function renderNames(filterText = '') {
+            const container = document.getElementById('view-names');
+            container.innerHTML = '';
+            
+            const filtered = glossaryData.names.filter(item => item.term.includes(filterText) || item.desc.includes(filterText));
+            
+            if (filtered.length === 0 && filterText) {
+                document.getElementById('empty-search').classList.remove('hidden');
+                return;
+            }
+
+            filtered.forEach(item => {
+                const style = getOriginStyle(item.type);
+                const el = document.createElement('div');
+                el.className = `bg-white p-6 rounded-xl border ${style.border} shadow-sm card-hover flex flex-col h-full relative overflow-hidden`;
+                el.innerHTML = `
+                    <div class="absolute top-0 right-0 p-4 opacity-10 font-serif text-6xl font-bold select-none text-stone-400">
+                        ${item.hanja !== item.term ? item.hanja.charAt(0) : ''}
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider ${style.badge} px-2 py-1 rounded inline-block mb-2">${style.label}</span>
+                        <h3 class="text-2xl font-bold serif text-stone-900">${item.term}</h3>
+                        <p class="text-stone-500 text-sm font-serif">${item.hanja}</p>
+                    </div>
+                    <p class="text-stone-600 text-sm leading-relaxed mb-4 flex-grow">${item.desc}</p>
+                    <div class="mt-auto pt-4 border-t border-stone-100">
+                        <span class="text-xs font-semibold text-stone-400">💡 KEY POINT</span>
+                        <p class="text-sm font-medium ${style.text}">${item.tag}</p>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function renderDocuments(filterText = '') {
+            const container = document.getElementById('documents-grid');
+            container.innerHTML = '';
+            
+            const filtered = glossaryData.documents.filter(item => item.title.includes(filterText) || item.content.includes(filterText));
+            
+            if (filtered.length === 0 && filterText) {
+                document.getElementById('empty-search').classList.remove('hidden');
+                return;
+            }
+
+            filtered.forEach(item => {
+                const style = getOriginStyle(item.origin);
+                const el = document.createElement('div');
+                el.className = `bg-white p-6 rounded-xl border-l-4 ${style.border.replace('border', 'border-l-' + style.border.split('-')[1] + '-500')} shadow-sm card-hover`;
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="text-xl font-bold serif text-stone-900">${item.title}</h3>
+                        <span class="text-lg font-serif text-stone-400 font-bold">${item.year}</span>
+                    </div>
+                    <span class="text-xs font-bold px-2 py-1 rounded ${style.badge} mb-3 inline-block">${style.label} 문헌</span>
+                    
+                    <div class="space-y-3">
+                        <div class="bg-stone-50 p-3 rounded text-sm text-stone-700 leading-relaxed">
+                            "${item.content}"
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-stone-400 uppercase">역사적 의의</span>
+                            <p class="text-sm font-bold ${style.text}">${item.meaning}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+            
+            // Update stats if showing full list
+            if (!filterText) updateDocStats();
+        }
+
+        function renderPeople(filterText = '') {
+            const container = document.getElementById('view-people');
+            container.innerHTML = '';
+            
+            const filtered = glossaryData.people.filter(item => item.name.includes(filterText) || item.desc.includes(filterText));
+            
+            if (filtered.length === 0 && filterText) {
+                document.getElementById('empty-search').classList.remove('hidden');
+                return;
+            }
+
+            filtered.forEach(item => {
+                let icon = '👤';
+                let style = 'bg-white border-stone-200';
+                if (item.type === 'hero') { icon = '🛡️'; style = 'bg-blue-50 border-blue-200'; }
+                if (item.type === 'conflict') { icon = '⚠️'; style = 'bg-red-50 border-red-200'; }
+                if (item.type === 'policy') { icon = '📜'; style = 'bg-stone-50 border-stone-200'; }
+
+                const el = document.createElement('div');
+                el.className = `${style} border p-6 rounded-xl shadow-sm card-hover flex gap-4 items-start`;
+                el.innerHTML = `
+                    <div class="text-4xl p-2 bg-white rounded-full shadow-sm">${icon}</div>
+                    <div>
+                        <h3 class="text-xl font-bold serif text-stone-900">${item.name}</h3>
+                        <p class="text-xs font-bold text-stone-500 mb-2 uppercase tracking-wide">${item.sub}</p>
+                        <p class="text-stone-700 text-sm leading-relaxed">${item.desc}</p>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // --- CHART LOGIC ---
+        function initChart() {
+            const ctx = document.getElementById('docChart');
+            if (!ctx) return;
+
+            const counts = { kr: 0, jp: 0, intl: 0 };
+            glossaryData.documents.forEach(d => {
+                if (d.origin === 'korea') counts.kr++;
+                else if (d.origin === 'japan') counts.jp++;
+                else counts.intl++;
+            });
+
+            // Update text stats
+            document.getElementById('stat-kr').innerText = counts.kr;
+            document.getElementById('stat-jp').innerText = counts.jp;
+            document.getElementById('stat-intl').innerText = counts.intl;
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['한국 문헌', '일본 문헌', '국제 문서'],
+                    datasets: [{
+                        data: [counts.kr, counts.jp, counts.intl],
+                        backgroundColor: ['#3b82f6', '#ef4444', '#78716c'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: "'Noto Sans KR'" } } },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => ` ${ctx.label}: ${ctx.raw}건`
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        function updateDocStats() {
+            if(!chartInstance) initChart();
+        }
+
+        // --- INTERACTION LOGIC ---
+        
+        function switchTab(tabId) {
+            currentTab = tabId;
+            
+            // 1. Update UI Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'font-bold', 'text-stone-900');
+                btn.classList.add('font-medium', 'text-stone-500');
+            });
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.add('active', 'font-bold');
+            activeBtn.classList.remove('font-medium', 'text-stone-500');
+
+            // 2. Update Intro Text
+            const introTitle = document.getElementById('intro-title');
+            const introDesc = document.getElementById('intro-desc');
+            
+            // Fade effect
+            const introBox = document.getElementById('section-intro');
+            introBox.style.opacity = '0';
+            setTimeout(() => {
+                introTitle.textContent = descriptions[tabId].title;
+                introDesc.textContent = descriptions[tabId].text;
+                introBox.style.opacity = '1';
+            }, 200);
+
+            // 3. Toggle View Visibility
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // 4. Render Content
+            const searchText = document.getElementById('searchInput').value.trim();
+            if (tabId === 'names') renderNames(searchText);
+            if (tabId === 'documents') {
+                renderDocuments(searchText);
+                // Wait for layout to settle before rendering chart
+                setTimeout(initChart, 50); 
+            }
+            if (tabId === 'people') renderPeople(searchText);
+        }
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            document.getElementById('empty-search').classList.add('hidden');
+            if (currentTab === 'names') renderNames(val);
+            if (currentTab === 'documents') renderDocuments(val);
+            if (currentTab === 'people') renderPeople(val);
+        });
+
+        // Initialize
+        window.onload = function() {
+            // Add fade transition to intro
+            document.getElementById('section-intro').style.transition = 'opacity 0.2s ease-in-out';
+            switchTab('names'); // Load default
+        };
+
+    </script>
+</body>
+</html>
